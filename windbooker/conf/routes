@@ -1,0 +1,45 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# An example controller showing a sample home page
+GET     /                           controllers.HomeController.index
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+
+# -------------------------------- #
+# RESTful API for the Project 2    #
+# -------------------------------- #
+
+# Get a list of trips booked.
+# GET     /trips                      controllers.<controller here>.<function>
+
+# Get a list of segments of a trip. A segment is represented by its flight.
+# GET     /trips/:tripID
+
+# Get a list of airline operators.
+# GET     /operators
+
+# Get a list of flights operated by an airline operater.
+# GET     /operators/:operator/flights
+
+# Get the number of available seats on a flight.
+# GET     /operators/:operator/flights/:flight
+
+# Book a trip. Currently, the $from and $to should always be X and Y, if not return and error.
+# POST    /trip/:from/:to
+
+# -------------------------------- #
+# Debugging API                    #
+# -------------------------------- #
+
+# After this request is posted, corresponding airline actor will reply fail to subsequent 'Confirm' requests without actual processing.
+# POST   /actor/$airline/confirm_fail
+
+# After this request is posted, corresponding airline actor will not reply to subsequent 'Confirm' requests without actual processing.
+# POST   /actor/$airline/confirm_no_response
+
+# After the request is posted, the actor will reset to normal.
+# POST   /actor/$airline/reset
+
