@@ -15,15 +15,15 @@ public class BookingActorProtocol {
      */
     public static class GetAllBookedTrips {
 
-        public GetAllBookedTrips() { }
+        BookingActorJDBCConnector jdbcConnector;
 
-        public ArrayList<String> getAllBookedTrips() {
-            // Real version would connect
-            // to the database to get the list of booked trips
-            ArrayList<String> bookedTrips = new ArrayList<>();
-            bookedTrips.add("trip1");
-            bookedTrips.add("trip2");
-            return bookedTrips;
+        public GetAllBookedTrips() {
+            jdbcConnector = new BookingActorJDBCConnector();
+        }
+
+        public String[] getAllBookedTrips() {
+            ArrayList<String> result = jdbcConnector.selectAllBookedTrips();
+            return result.toArray(new String[result.size()]);
         }
 
     }
@@ -31,17 +31,52 @@ public class BookingActorProtocol {
     /**
      *
      */
-    public static class GetBookedTrip {
+    public static class GetTripSegments {
+        BookingActorJDBCConnector jdbcConnector;
         private String tripID;
 
-        public GetBookedTrip(String tripID) {
+        public GetTripSegments(String tripID) {
+            jdbcConnector = new BookingActorJDBCConnector();
             this.tripID = tripID;
         }
 
-        public TripBean getBookedTrip() {
-            // Real version would connect
-            // to the database to get the list of booked trips
-            return new TripBean(this.tripID, new String[]{"AA001", "CA002"});
+        public String[] getTripSegments() {
+            String segmentsString = jdbcConnector.selectTripSegmentsForTrip(this.tripID);
+            if (segmentsString != null ) {
+                return segmentsString.split(",");
+            } else {
+                return new String[]{};
+            }
+        }
+    }
+
+    public static class GetAllAirlineOperators {
+
+        OperatorsTableConnector operatorsTable;
+
+        public GetAllAirlineOperators() {
+            operatorsTable = new OperatorsTableConnector();
+        }
+
+        public String[] getAllAirlineOperators() {
+            ArrayList<String> result = operatorsTable.selectAllAirlineOperators();
+            return result.toArray(new String[result.size()]);
+        }
+
+    }
+
+    public static class OperatorDoesNotExist {
+        public OperatorDoesNotExist() {}
+    }
+
+    public static class BookATrip {
+
+        public String from;
+        public String to;
+
+        public BookATrip(String from, String to) {
+            this.from = from;
+            this.to = to;
         }
     }
 

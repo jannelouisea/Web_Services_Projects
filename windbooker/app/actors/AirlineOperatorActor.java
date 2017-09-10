@@ -9,15 +9,15 @@ import java.util.*;
 public class AirlineOperatorActor extends UntypedAbstractActor {
 
     private String opCode;
-    private HashMap<String, Integer> designatedFlights;
+    private FlightsTableConnector flightsTable;
 
-    public AirlineOperatorActor(String opCode, HashMap<String, Integer> designatedFlights) {
+    public AirlineOperatorActor(String opCode) {
+        flightsTable = new FlightsTableConnector();
         this.opCode = opCode;
-        this.designatedFlights = designatedFlights;
     }
 
-    public static Props getProps(String opCode, HashMap<String, Integer> designatedFlights) {
-        return Props.create(AirlineOperatorActor.class, () -> new AirlineOperatorActor(opCode, designatedFlights));
+    public static Props getProps(String opCode) {
+        return Props.create(AirlineOperatorActor.class, () -> new AirlineOperatorActor(opCode));
     }
 
     @Override
@@ -32,10 +32,12 @@ public class AirlineOperatorActor extends UntypedAbstractActor {
     }
 
     private void reactionToGetAllFlights() {
-        sender().tell(designatedFlights.keySet(), self());
+        ArrayList<String> flights = flightsTable.getAllFlightsForOperator(this.opCode);
+        sender().tell(flights.toArray(new String[flights.size()]), self());
     }
 
     private void reactionToGetAvailableSeatsForFlight(GetAvailableSeatsForFlight msg) {
-        sender().tell(designatedFlights.get(msg.getFlightCode()), self());
+        Integer seats = flightsTable.getAvailableSeatsForFlight(msg.getFlightCode());
+        sender().tell(seats, self());
     }
 }

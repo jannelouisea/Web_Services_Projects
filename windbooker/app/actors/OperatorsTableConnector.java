@@ -6,10 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import java.util.ArrayList;
 
-class BookingActorJDBCConnector {
+public class OperatorsTableConnector {
 
     static final String DB_URL = "jdbc:sqlite:windbooker.db";
 
@@ -27,15 +26,11 @@ class BookingActorJDBCConnector {
         return conn;
     }
 
-    /**
-     * Returns all rows containing location information for the specified username
-     * @return An arraylist of all booked trips
-     */
-    ArrayList<String> selectAllBookedTrips() {
+    ArrayList<String> selectAllAirlineOperators() {
         Connection conn = null;
-        ArrayList<String> bookedTrips = new ArrayList<String>();
+        ArrayList<String> airlineOperators = new ArrayList<String>();
 
-        String sqlStmt = "SELECT tripID FROM bookedtrips;";
+        String sqlStmt = "SELECT opcode FROM operators;";
 
         try {
             conn = connect();
@@ -43,7 +38,7 @@ class BookingActorJDBCConnector {
             ResultSet rs = stmt.executeQuery(sqlStmt);
 
             while(rs.next()) {
-                bookedTrips.add(rs.getString("tripID"));
+                airlineOperators.add(rs.getString("opcode"));
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -57,36 +52,6 @@ class BookingActorJDBCConnector {
             }
         }
 
-        return bookedTrips;
-    }
-
-    String selectTripSegmentsForTrip(String tripId) {
-        Connection conn = null;
-        String tripSegments = null;
-
-        String sqlStmt = "SELECT segments FROM bookedtrips WHERE tripID=?;";
-
-        try {
-            conn = connect();
-            PreparedStatement pstmt  = conn.prepareStatement(sqlStmt);
-
-            pstmt.setString(1, tripId);
-
-            ResultSet rs  = pstmt.executeQuery();
-
-            while(rs.next()) {
-                tripSegments = rs.getString("segments");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace(System.out);
-        } finally {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace(System.out);
-            }
-        }
-
-        return tripSegments;
+        return airlineOperators;
     }
 }
